@@ -1,21 +1,24 @@
+ARG MCSV_NAME=mcsv-user
 FROM openjdk:17-slim as builder
 
-WORKDIR /app/mcsv-user
+ARG MCSV_NAME
+
+WORKDIR /app/$MCSV_NAME
 
 # Copy the pom.xml file to download dependencies
 COPY ./pom.xml /app
 # Copy the complete project in the container
-COPY ./mcsv-user/.mvn ./.mvn
+COPY ./$MCSV_NAME/.mvn ./.mvn
 #we need to copy the mvnw file to save the cache of maven
-COPY ./mcsv-user/mvnw .
+COPY ./$MCSV_NAME/mvnw .
 #we copy the file pom to download the dependencies
-COPY ./mcsv-user/pom.xml .
+COPY ./$MCSV_NAME/pom.xml .
 
 #skip test and ejecution in each build and delete the target folder
 RUN ./mvnw clean package -Dmaven.test.skip -Dmaven.main.skip -Dspring-boot.repackage.skip && rm -r ./target/
 
 # Copy the complete project in the container
-COPY ./mcsv-user/src ./src
+COPY ./$MCSV_NAME/src ./src
 
 #we run the maven command to download the dependencies and run project
 RUN ./mvnw clean package -DskipTests
@@ -29,10 +32,19 @@ WORKDIR /app
 #we create a directory to save the logs of spring boot
 RUN mkdir ./logs
 
-COPY --from=builder /app/mcsv-user/target/mcsv-user.jar .
+ARG MCSV_NAME
+
+ARG TARGET_FOLDER=/app/$MCSV_NAME/target
+
+COPY --from=builder /$TARGET_FOLDER/mcsv-user.jar .
+
+ARG PORT_APP=8081
+
+
+ENV PORT $PORT_APP
 
 # Run the jar file with port
-EXPOSE 8081
+EXPOSE $PORT
 
 #ENTRYPOINT ["java", "-jar", "mcsv-users-0.0.1-SNAPSHOT.jar"]
 CMD ["java", "-jar", "mcsv-user.jar"]
