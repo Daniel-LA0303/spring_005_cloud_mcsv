@@ -79,10 +79,10 @@ services:
 #define volumes
 volumes:
   data-mysql:
-    # name: data-mysqlcreate
+    # name: data-mysqlcreate in this case create the volume
     external: true #this is to use the volume created by the command docker volume create data-mysql
   data-postgres:
-    #name: data-postgres
+    #name: data-postgres in this case create the volume
     external: true #this is to use the volume created by the command docker volume create data-postgres
 
 #define networks
