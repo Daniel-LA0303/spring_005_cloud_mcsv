@@ -10,12 +10,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import com.mx.mcsv.service.user.model.Bike;
 
-@FeignClient(name = "service-bike", url = "http://localhost:8003/bike")
+@FeignClient(name = "service-bike")
 public interface BikeFeignClient {
 
-	@GetMapping("/byuser/{userId}")
+	@GetMapping("/bike/byuser/{userId}")
 	List<Bike> getBikes(@PathVariable("userId") int userId);
 
-	@PostMapping()
+	@PostMapping("/bike")
 	Bike save(@RequestBody Bike bike);
 }
