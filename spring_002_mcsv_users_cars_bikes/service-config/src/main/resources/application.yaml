@@ -7,6 +7,6 @@ spring:
         git:
           default-label: spring_002_mcsv_users_cars_bikes
           uri: https://github.com/Daniel-LA0303/spring_005_cloud_mcsv
-          search-paths: config-data
+          search-paths: spring_002_mcsv_users_cars_bikes/config-data
   application:
     name: service-config
