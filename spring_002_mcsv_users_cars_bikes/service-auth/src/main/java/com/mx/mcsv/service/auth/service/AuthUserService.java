@@ -19,8 +19,10 @@ public class AuthUserService {
 
 	@Autowired
 	AuthUserRepository authUserRepository;
+
 	@Autowired
 	PasswordEncoder passwordEncoder;
+
 	@Autowired
 	JwtProvider jwtProvider;
 
@@ -41,7 +43,8 @@ public class AuthUserService {
 			return null;
 		}
 		String password = passwordEncoder.encode(dto.getPassword());
-		AuthUser authUser = AuthUser.builder().userName(dto.getUserName()).password(password).build();
+		AuthUser authUser = AuthUser.builder().userName(dto.getUserName()).password(password).role(dto.getRole())
+				.build();
 		return authUserRepository.save(authUser);
 	}
 
@@ -49,7 +52,7 @@ public class AuthUserService {
 		if (!jwtProvider.validate(token, dto)) {
 			return null;
 		}
-		String username = jwtProvider.getUserNameFromToken(token, dto);
+		String username = jwtProvider.getUserNameFromToken(token);
 		if (!authUserRepository.findByUserName(username).isPresent()) {
 			return null;
 		}

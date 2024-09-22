@@ -37,7 +37,7 @@ public class JwtProvider {
 				.signWith(SignatureAlgorithm.HS256, secret).compact();
 	}
 
-	public String getUserNameFromToken(String token, RequestDto dto) {
+	public String getUserNameFromToken(String token) {
 		try {
 			return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody().getSubject();
 		} catch (Exception e) {
@@ -51,7 +51,6 @@ public class JwtProvider {
 		} catch (Exception e) {
 			return false;
 		}
-
 		if (!isAdmin(token) && routeValidator.isAdminPath(dto)) {
 			return false;
 		}
@@ -66,4 +65,5 @@ public class JwtProvider {
 	private boolean isAdmin(String token) {
 		return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody().get("role").equals("admin");
 	}
+
 }
