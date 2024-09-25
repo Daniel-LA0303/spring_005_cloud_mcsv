@@ -1,51 +1,45 @@
 ARG MCSV_NAME=mcsv-user
-FROM openjdk:17-slim as builder
+FROM openjdk:17-slim AS builder
 
 ARG MCSV_NAME
 
 WORKDIR /app/$MCSV_NAME
 
-# Copy the pom.xml file to download dependencies
+# Copia el pom.xml para descargar las dependencias
 COPY ./pom.xml /app
-# Copy the complete project in the container
+
+# Copia el resto del proyecto
 COPY ./$MCSV_NAME/.mvn ./.mvn
-#we need to copy the mvnw file to save the cache of maven
-COPY ./$MCSV_NAME/mvnw .
-#we copy the file pom to download the dependencies
-COPY ./$MCSV_NAME/pom.xml .
-
-#skip test and ejecution in each build and delete the target folder
-RUN ./mvnw clean package -Dmaven.test.skip -Dmaven.main.skip -Dspring-boot.repackage.skip && rm -r ./target/
-
-# Copy the complete project in the container
+COPY ./$MCSV_NAME/pom.xml . 
 COPY ./$MCSV_NAME/src ./src
 
-#we run the maven command to download the dependencies and run project
-RUN ./mvnw clean package -DskipTests
+# Instala Maven
+RUN apt-get update && apt-get install -y maven
 
-# ------------------ Second stage ------------------
-#we cretae a new image with the image previous
+# Ejecuta Maven para construir el proyecto y omitir las pruebas
+RUN mvn clean package -Dmaven.test.skip=true
+
+# ------------------ Segunda etapa ------------------
+# Creamos una nueva imagen a partir de la etapa anterior
 FROM openjdk:17-slim
 
 WORKDIR /app
 
-#we create a directory to save the logs of spring boot
+# Creamos un directorio para guardar los logs de Spring Boot
 RUN mkdir ./logs
 
 ARG MCSV_NAME
-
 ARG TARGET_FOLDER=/app/$MCSV_NAME/target
 
-COPY --from=builder /$TARGET_FOLDER/mcsv-user.jar .
+# Copia el archivo JAR construido de la etapa de construcción
+COPY --from=builder /app/$MCSV_NAME/target/*.jar mcsv-user.jar
 
 ARG PORT_APP=8081
-
-
 ENV PORT $PORT_APP
 
-# Run the jar file with port
+# Exponer el puerto de la aplicación
 EXPOSE $PORT
 
-#ENTRYPOINT ["java", "-jar", "mcsv-users-0.0.1-SNAPSHOT.jar"]
+# Ejecutar el archivo JAR con el puerto configurado
 CMD ["java", "-jar", "mcsv-user.jar"]
 
