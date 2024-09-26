@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mcsv-users-container
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mcsv-users-container
+  template:
+    metadata:
+      labels:
+        app: mcsv-users-container
+    spec:
+      containers:
+      - image: daniella03/mcsv-user:v3
+        name: mcsv-users-container
+        ports:
+        - containerPort: 8081
+        env:  
+          - name: PORT
+            value: "8081"  
+          - name: DB_HOST
+            value: "mysql8" 
+          - name: DB_DATABASE
+            value: "spring_014_db_mcsv_user"
+          - name: DB_USERNAME
+            value: "root"
+          - name: DB_PASSWORD
+            value: "1234"
+          - name: COURSE_URL
+            value: "mcsv-courses-container:8082"

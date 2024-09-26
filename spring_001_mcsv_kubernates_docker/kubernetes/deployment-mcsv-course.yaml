@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mcsv-courses-container
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mcsv-courses-container
+  template:
+    metadata:
+      labels:
+        app: mcsv-courses-container
+    spec:
+      containers:
+      - image: daniella03/mcsv-course:v2
+        name: mcsv-courses-container
+        ports:
+        - containerPort: 8082
+        env:  
+          - name: PORT
+            value: "8082"  
+          - name: DB_HOST
+            value: "postgres14"  
+          - name: DB_DATABASE
+            value: "spring_001_db_mcsv_course"
+          - name: DB_USERNAME
+            value: "postgres"
+          - name: DB_PASSWORD
+            value: "1234"
+          - name: USER_URL
+            value: "mcsv-users-container:8081"
