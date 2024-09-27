@@ -18,7 +18,14 @@ spec:
         ports:
         - containerPort: 5432
         env:
-          - name: POSTGRES_PASSWORD
-            value: "1234"
-          - name: POSTGRES_DB
-            value: "spring_001_db_mcsv_course"
+        - name: POSTGRES_PASSWORD
+          value: "1234"
+        - name: POSTGRES_DB
+          value: "spring_001_db_mcsv_course"
+        volumeMounts:
+        - name: data-postgres
+          mountPath: /var/lib/postgresql/data
+      volumes:
+      - name: data-postgres
+        persistentVolumeClaim:
+          claimName: postgres-pvc

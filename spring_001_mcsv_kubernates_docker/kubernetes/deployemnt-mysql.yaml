@@ -17,15 +17,15 @@ spec:
         name: mysql8
         ports:
         - containerPort: 3306
-      - env:
+        env:                            
         - name: MYSQL_ROOT_PASSWORD
           value: "1234"
         - name: MYSQL_DATABASE
           value: spring_014_db_mcsv_user
-      - volumeMounts:
+        volumeMounts:
         - name: data-mysql
           mountPath: /var/lib/mysql
       volumes:
       - name: data-mysql
-        hotPath: /var/lib/mysql
-        type: DirectoryOrCreate
+        persistentVolumeClaim:
+          claimName: mysql-pvc
