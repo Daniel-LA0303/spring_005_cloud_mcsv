@@ -19,14 +19,32 @@ spec:
         - containerPort: 8082
         env:  
           - name: PORT
-            value: "8082"  
+            valueFrom:
+              configMapKeyRef:
+                name: mcsv-courses-container
+                key: port 
           - name: DB_HOST
-            value: "postgres14"  
+            valueFrom:
+              configMapKeyRef:
+                name: mcsv-courses-container
+                key: db_host
           - name: DB_DATABASE
-            value: "spring_001_db_mcsv_course"
+            valueFrom:
+              configMapKeyRef:
+                name: mcsv-courses-container
+                key: database
           - name: DB_USERNAME
-            value: "postgres"
+            valueFrom:
+              configMapKeyRef:
+                name: mcsv-courses-container
+                key: username
           - name: DB_PASSWORD
-            value: "1234"
+            valueFrom:
+              configMapKeyRef:
+                name: mcsv-courses-container
+                key: password
           - name: USER_URL
-            value: "mcsv-users-container:8081"
+            valueFrom:
+              configMapKeyRef:
+                name: mcsv-courses-container
+                key: user_url

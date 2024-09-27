@@ -19,9 +19,15 @@ spec:
         - containerPort: 5432
         env:
         - name: POSTGRES_PASSWORD
-          value: "1234"
+          valueFrom:
+            configMapKeyRef:
+              name: mcsv-courses-container
+              key: password
         - name: POSTGRES_DB
-          value: "spring_001_db_mcsv_course"
+          valueFrom:
+            configMapKeyRef:
+              name: mcsv-courses-container
+              key: database
         volumeMounts:
         - name: data-postgres
           mountPath: /var/lib/postgresql/data
