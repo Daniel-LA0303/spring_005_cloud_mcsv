@@ -20,7 +20,7 @@ spec:
         env:
         - name: POSTGRES_PASSWORD
           valueFrom:
-            configMapKeyRef:
+            secretKeyRef:
               name: mcsv-courses-container
               key: password
         - name: POSTGRES_DB
