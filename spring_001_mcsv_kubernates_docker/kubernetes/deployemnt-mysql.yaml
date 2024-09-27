@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql8
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql8
+  template:
+    metadata:
+      labels:
+        app: mysql8
+    spec:
+      containers:
+      - image: mysql:8
+        name: mysql8
+        ports:
+        - containerPort: 3306
+      - env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: "1234"
+        - name: MYSQL_DATABASE
+          value: spring_014_db_mcsv_user
+      - volumeMounts:
+        - name: data-mysql
+          mountPath: /var/lib/mysql
+      volumes:
+      - name: data-mysql
+        hotPath: /var/lib/mysql
+        type: DirectoryOrCreate
