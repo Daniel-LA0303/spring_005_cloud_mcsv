@@ -23,6 +23,7 @@
 	<modules>
         <module>mcsv-user</module>
         <module>mcsv-course</module>
+		<module>mcsv-gateway</module>
     </modules>
   
     <properties>
