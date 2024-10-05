@@ -13,7 +13,7 @@ spec:
         app: mcsv-courses-container
     spec:
       containers:
-      - image: daniella03/mcsv-course:v2
+      - image: daniella03/mcsv-course:v4
         name: mcsv-courses-container
         ports:
         - containerPort: 8082

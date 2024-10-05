@@ -13,11 +13,19 @@ spec:
         app: mcsv-users-container
     spec:
       containers:
-      - image: daniella03/mcsv-user:v3
+      - image: daniella03/mcsv-user:v6
         name: mcsv-users-container
         ports:
         - containerPort: 8081
-        env:  
+        env:
+          - name: MY_POD_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: MY_POD_IP
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP
           - name: PORT
             valueFrom:
               configMapKeyRef:
@@ -48,3 +56,28 @@ spec:
               configMapKeyRef:
                 name: mcsv-users-container
                 key: course_url
+        #health check
+        #readinessProbe:
+        #  httpGet:
+         #   path: /actuator/health/readiness
+          #  port: 8081
+           # scheme: HTTP
+          #initialDelaySeconds: 5
+          #periodSeconds: 20
+          #timeoutSeconds: 10
+        #livenessProbe:
+#          httpGet:
+ #           path: /actuator/health/liveness
+  #          port: 8081
+   #         scheme: HTTP
+    #      initialDelaySeconds: 5
+     #     periodSeconds: 20
+      #    timeoutSeconds: 10
+        #resources
+      #  resources:
+       #   requests:
+        #    memory: "64Mi"
+         #   cpu: "100m"
+          #limits:
+           # memory: "128Mi"
+            #cpu: "250m"

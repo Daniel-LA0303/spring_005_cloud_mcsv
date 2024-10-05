@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.mx.mcsv.course.models.dto.User;
 
-@FeignClient(name = "mcsv-users", url = "${mcsv.user.url}")
+@FeignClient(name = "mcsv-users-container")
 public interface UserClientRest {
 
 	@PostMapping("/")

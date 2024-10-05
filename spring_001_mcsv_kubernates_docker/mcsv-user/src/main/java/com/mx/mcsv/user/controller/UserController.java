@@ -9,6 +9,7 @@ import java.util.Optional;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -29,6 +30,9 @@ public class UserController {
 
 	@Autowired
 	private UserService userService;
+
+	@Autowired
+	private Environment env;
 
 	private static ResponseEntity<Map<String, String>> valid(BindingResult result) {
 		Map<String, String> errors = new HashMap<>();
@@ -65,8 +69,12 @@ public class UserController {
 	}
 
 	@GetMapping
-	public List<User> list() {
-		return userService.list();
+	public Map<String, Object> list() {
+
+		Map<String, Object> response = new HashMap<>();
+		response.put("users", userService.list());
+		response.put("podInfo", env.getProperty("MY_POD_NAME") + " - " + env.getProperty("MY_POD_IP"));
+		return response;
 	}
 
 	@PostMapping
