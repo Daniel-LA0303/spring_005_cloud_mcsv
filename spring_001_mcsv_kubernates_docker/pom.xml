@@ -24,6 +24,7 @@
         <module>mcsv-user</module>
         <module>mcsv-course</module>
 		<module>mcsv-gateway</module>
+		<module>mcsv-auth</module>
     </modules>
   
     <properties>

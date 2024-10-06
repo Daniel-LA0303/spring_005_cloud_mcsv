@@ -9,9 +9,12 @@ import java.util.Optional;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,10 +32,37 @@ import com.mx.mcsv.user.services.UserService;
 public class UserController {
 
 	@Autowired
+	private BCryptPasswordEncoder passwordEncoder;
+
+	@Autowired
 	private UserService userService;
 
 	@Autowired
+	private ApplicationContext context;
+
+	@Autowired
 	private Environment env;
+
+	@GetMapping("/crash")
+	public void crash() {
+		((ConfigurableApplicationContext)context).close();
+	}
+
+	//get the token from the auth service
+	@GetMapping("/authorized")
+	public Map<String, Object> authorized(@RequestParam(name = "code") String code) {
+		return Collections.singletonMap("code", code);
+	}
+
+	@GetMapping("/login")
+	public ResponseEntity<?> loginByEmail(@RequestParam(name = "email") String email) {
+		Optional<User> user = userService.findByEmail(email);
+
+		if (user.isPresent()) {
+			return ResponseEntity.ok(user.get());
+		}
+		return ResponseEntity.notFound().build();
+	}
 
 	private static ResponseEntity<Map<String, String>> valid(BindingResult result) {
 		Map<String, String> errors = new HashMap<>();
@@ -89,6 +119,8 @@ public class UserController {
 			return ResponseEntity.badRequest().body(Collections.singletonMap("email", "email already exists"));
 		}
 
+		user.setPassword(passwordEncoder.encode(user.getPassword()));
+
 		return ResponseEntity.status(HttpStatus.CREATED).body(userService.save(user));
 	}
 
@@ -108,7 +140,7 @@ public class UserController {
 			}
 			userDb.setName(user.getName());
 			userDb.setEmail(user.getEmail());
-			userDb.setPassword(user.getPassword());
+			userDb.setPassword(passwordEncoder.encode(user.getPassword()));
 			return ResponseEntity.status(HttpStatus.CREATED).body(userService.save(userDb));
 		}
 

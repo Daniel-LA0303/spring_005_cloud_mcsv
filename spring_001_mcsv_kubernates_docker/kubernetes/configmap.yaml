@@ -3,6 +3,8 @@ kind: ConfigMap
 metadata:
   name: mcsv-users-container
 data:
+  lb_auth_issuer_uri: http://127.0.0.1:51306
+  lb_users_uri: http://127.0.0.1:50590
   port: "8081"
   db_host: "mysql8"
   database: "spring_014_db_mcsv_user"
